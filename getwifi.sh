@@ -5,6 +5,8 @@ if [ $EUID -ne 0 ]; then
 fi
 wpaconffile="/etc/wpa_supplicant/wpa_supplicant.conf"
 interfaces=$(ifconfig -a -s |  awk '{print $1;}' | tail -n +3)
+## for manual interface list
+#interfaces="wlan0 wlan1"
 getInterface() {
 	echo -e "Available interfaces:\n$interfaces"
 	interfaceFound=0
@@ -13,8 +15,10 @@ getInterface() {
 		if [ -z "$interface" ]; then
 			continue
 		fi
-		for i in "${interfaces[@]}"; do
-			if [ $i = $interface ]; then
+		for i in $interfaces; do
+			echo "INTERFACE: $i"
+			echo "INTERFACE 2: $interface"
+			if [ "$i" = "$interface" ]; then
 				interfaceFound=1
 				break
 			fi
@@ -24,7 +28,7 @@ getInterface() {
 		fi
 	done
 }
-if [ ${#interfaces[@]} -gt 1 ]; then
+if [ $(wc -w <<< "$interfaces") -gt 1 ]; then
 	getInterface
 else
 	interface=${interfaces[0]}
@@ -33,11 +37,11 @@ interfacesUp=$(ifconfig -s |  awk '{print $1;}' | tail -n +3)
 interfaceUp=0
 echo $interfacesUp
 
-if [ -z $interfacesUp ]; then
+if [ -z "$interfacesUp" ]; then
 	ifconfig $interface up
 else
 	for i in "${interfacesUp[@]}"; do
-		if [ $i = $interface ]; then
+		if [ "$i" = "$interface" ]; then
 			interfaceUp=1
 			break
 		fi
@@ -62,4 +66,3 @@ for essid in ${essids[@]}; do
 		break
 	fi
 done
-
