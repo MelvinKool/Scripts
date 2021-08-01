@@ -1,0 +1,18 @@
+[ req ]
+default_bits = 4096
+distinguished_name = req_distinguished_name
+prompt = no
+string_mask = utf8only
+x509_extensions = myexts
+
+[ req_distinguished_name ]
+O = MelvinCorp
+CN = MelvinModules
+emailAddress = foo@example.com
+
+[ myexts ]
+basicConstraints=critical,CA:FALSE
+keyUsage=digitalSignature,nonRepudiation,keyEncipherment,keyAgreement
+extendedKeyUsage=critical,codeSigning
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid
